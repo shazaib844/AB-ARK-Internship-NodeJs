@@ -1,6 +1,5 @@
 import prisma from "../config/prisma.js";
 
-// ✅ POST /users
 export const createUser = async (req, res, next) => {
   try {
     const { name, email, role } = req.body;
@@ -16,7 +15,7 @@ export const createUser = async (req, res, next) => {
       data: {
         name,
         email,
-        role
+        role,
       },
     });
 
@@ -29,7 +28,6 @@ export const createUser = async (req, res, next) => {
   }
 };
 
-// ✅ GET /users
 export const getUsers = async (req, res, next) => {
   try {
     const users = await prisma.user.findMany();
@@ -43,7 +41,6 @@ export const getUsers = async (req, res, next) => {
   }
 };
 
-// ✅ GET /users/:id
 export const getUserById = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
@@ -68,7 +65,6 @@ export const getUserById = async (req, res, next) => {
   }
 };
 
-// ✅ DELETE /users/:id
 export const deleteUser = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
