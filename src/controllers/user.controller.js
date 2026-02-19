@@ -1,22 +1,38 @@
 import prisma from "../config/prisma.js";
+import bcrypt from "bcrypt";
 
 export const createUser = async (req, res, next) => {
   try {
-    const { name, email, role } = req.body;
+    const { name, email, role, password } = req.body;
 
-    if (!name || !email) {
+    if (!name || !email || !role || !password) {
       return res.status(400).json({
         success: false,
-        message: "Name and email are required",
+        message: "Name, email, role, and password are required",
       });
     }
+
+    const roleRecord = await prisma.role.findUnique({
+      where: { name: role.toUpperCase() },
+    });
+
+    if (!roleRecord) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid role",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
       data: {
         name,
         email,
-        role,
+        password: hashedPassword,
+        roleId: roleRecord.id,
       },
+      include: { role: true },
     });
 
     res.status(201).json({
@@ -30,7 +46,9 @@ export const createUser = async (req, res, next) => {
 
 export const getUsers = async (req, res, next) => {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      include: { role: true },
+    });
 
     res.status(200).json({
       success: true,
@@ -47,6 +65,7 @@ export const getUserById = async (req, res, next) => {
 
     const user = await prisma.user.findUnique({
       where: { id },
+      include: { role: true },
     });
 
     if (!user) {
