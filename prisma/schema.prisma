@@ -21,6 +21,7 @@ model User {
 
   roleId Int
   role   Role @relation(fields: [roleId], references: [id])
+  profileImage String?
 }
 
 model Role {

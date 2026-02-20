@@ -111,3 +111,31 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const uploadProfileImage = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
+    }
+
+    const userId = req.user.id;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        profileImage: `/uploads/${req.file.filename}`,
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Profile image uploaded successfully",
+      imagePath: updatedUser.profileImage,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

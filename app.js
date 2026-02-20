@@ -11,6 +11,8 @@ app.use("/users", userRoutes);
 
 app.use("/auth", authRoutes);
 
+app.use("/uploads", express.static("uploads"));
+
 app.use(errorHandler);
 
 export default app;
