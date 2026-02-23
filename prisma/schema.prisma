@@ -13,6 +13,12 @@ datasource db {
   provider = "sqlite"
 }
 
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
+}
+
 model User {
   id       Int    @id @default(autoincrement())
   name     String
@@ -21,12 +27,33 @@ model User {
 
   roleId Int
   role   Role @relation(fields: [roleId], references: [id])
-  profileImage String?
 }
 
-model Role {
-  id   Int    @id @default(autoincrement())
-  name String @unique
+model Intern {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  profileImage String? // optional
+  tasks        Task[]
+  createdAt    DateTime @default(now())
+}
 
-  users User[]
+model Task {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String
+  status      TaskStatus @default(PENDING)
+
+  attachment String?
+
+  internId Int
+  intern   Intern @relation(fields: [internId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
 }

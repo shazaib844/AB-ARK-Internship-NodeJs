@@ -1,7 +1,7 @@
 import express from "express";
 import { authenticate } from "../middleware/auth.middleware.js";
 import { authorize } from "../middleware/role.middleware.js";
-import upload from "../middleware/upload.middle.js";
+import upload from "../middleware/upload.middleware.js";
 import {
   createUser,
   getUsers,
